@@ -312,6 +312,42 @@ class FirebaseAnalytics {
     );
   }
 
+  /// Logs the standard `purchase` event.
+  ///
+  /// This event signifies that an item was purchased by a user. Note: This is
+  /// different from the in-app purchase event, which is reported automatically
+  /// for Google Play-based apps. Note: If you supply the [value] parameter,
+  /// you must also supply the [currency] parameter so that revenue metrics can
+  /// be computed accurately.
+  ///
+  /// See: https://firebase.google.com/docs/reference/android/com/google/firebase/analytics/FirebaseAnalytics.Event#PURCHASE
+  Future<void> logPurchase({
+    String? affiliation,
+    String? currency,
+    List? items,
+    double? value,
+    String? transactionId,
+    double? tax,
+    double? shipping,
+    String? coupon,
+  }) {
+    _requireValueAndCurrencyTogether(value, currency);
+
+    return logEvent(
+      name: 'purchase',
+      parameters: filterOutNulls(<String, Object?>{
+        _AFFILIATION: affiliation,
+        _CURRENCY: currency,
+        _ITEMS: items,
+        _VALUE: value,
+        _TRANSACTION_ID: transactionId,
+        _TAX: tax,
+        _SHIPPING: shipping,
+        _COUPON: coupon
+      }),
+    );
+  }
+
   /// Logs the standard `ecommerce_purchase` event.
   ///
   /// This event signifies that an item was purchased by a user. Note: This is
@@ -924,6 +960,9 @@ const String _ACHIEVEMENT_ID = 'achievement_id';
 /// `CAMPAIGN_DETAILS` click ID.
 const String _ACLID = 'aclid';
 
+//A product affiliation to designate a supplying company or brick and mortar store location (String).
+const String _AFFILIATION = 'affiliation';
+
 /// `CAMPAIGN_DETAILS` name; used for keyword analysis to identify a specific
 /// product promotion or strategic campaign.
 const String _CAMPAIGN = 'campaign';
@@ -981,6 +1020,9 @@ const String _ITEM_LOCATION_ID = 'item_location_id';
 
 /// The list in which the item was presented to the user.
 // const String _ITEM_LIST = 'item_list';
+
+//The list of items involved in the transaction.
+const String _ITEMS = 'items';
 
 /// The checkout step (1..N).
 const String _CHECKOUT_STEP = 'checkout_step';
